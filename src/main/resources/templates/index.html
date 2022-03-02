@@ -1,0 +1,51 @@
+<!DOCTYPE>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>PodReco</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+
+</style>
+</head>
+<body style="font-family: 'Exo 2', sans-serif;" class="w-100">
+
+	<nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+	  <div class="container-fluid ">
+	    <a class="navbar-brand" href="/">PodReco</a>
+	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="collapse navbar-collapse" id="navbarNav">
+	      <ul class="navbar-nav">
+	        <li class="nav-item">
+	         <a class="nav-link" th:href="@{podcasts/0}">Podcasts</a>
+	        </li>
+	        <li class="nav-item">
+	         <a class="nav-link" th:href="@{streamingService}">Streaming Services</a>
+	        </li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	
+	
+	<div class="position-relative h-50 ">
+	<div class="position-absolute top-50 start-50 translate-middle">
+	 <div class="animate__animated animate__lightSpeedInRight card text-white bg-dark text-end" style="width: 18rem;">
+		  <div class="card-body">
+		    <h5 class="card-title">Welcome to PodReco</h5>
+		    <p class="card-text">Feel free to drop some podcast recommendations! <br>This is a Spring Boot application that utilizes JPARepository containing an API for easy CRUD operations.</p>
+		    <a th:href="@{podcasts/0}" class="btn btn-info">Get Started</a>
+		  </div>
+		</div>
+		</div>
+	</div>
+
+</body>
+</html>

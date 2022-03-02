@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Podcasts</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body style="font-family: 'Exo 2', sans-serif; width:'100vw !important;'"  class="h-100 w-100">
+	<!-- NAV BAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+	  <div class="container-fluid">
+	    <a class="navbar-brand" href="/">PodReco</a>
+	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="collapse navbar-collapse" id="navbarNav">
+	      <ul class="navbar-nav">
+	        <li class="nav-item">
+	         <a class="nav-link" href="#">Podcasts</a>
+	        </li>
+	        <li class="nav-item">
+	         <a class="nav-link" href="/streamingService">Streaming Services</a>
+	        </li>
+	      </ul>
+	    </div>
+	    <form method="get" th:action="@{/findByDescriptionContains/0}" class="animate__animated animate__fadeIn d-flex">
+		    <input class="form-control me-2" type="search" name="keyword" th:value="${keyword}" placeholder="Search (Description)" aria-label="Search">
+		    <button class="btn btn-outline-success" type="submit">Search</button>
+	    </form>
+	  </div>
+	</nav>
+	<!-- SORTING & FILTERING -->
+	<div class="d-flex flex-row-reverse bd-highlight">
+				<div class="p-1 bd-highlight">
+					<div class="dropdown ">
+						<button class="btn btn-secondary dropdown-toggle animate__animated animate__slideInRight" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Filter By: Streaming Service</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+							<li th:each="streamingService : ${streamingServiceList}">
+							<a th:href="@{/findByStreamingServiceListContains/} + ${streamingService.name} + '/0'" th:text="${streamingService.name}" class="dropdown-item">Ascending</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="p-1 bd-highlight">
+					<div class="dropdown ">
+						<button class="btn btn-secondary dropdown-toggle animate__animated animate__slideInRight" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Sort By: Rating</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+							<li><a class="dropdown-item" th:href="@{/findByOrderByRatingAsc/0}">Ascending</a></li>
+							<li><a class="dropdown-item" th:href="@{/findByOrderByRatingDesc/0}">Descending</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="p-1 bd-highlight">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle animate__animated animate__slideInRight" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Sort By: Title</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+							<li><a class="dropdown-item" th:href="@{/findByOrderByTitleAsc/0}">Ascending</a></li>
+							<li><a class="dropdown-item" th:href="@{/findByOrderByTitleDesc/0}">Descending</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="p-1 bd-highlight">
+				<button type="button" class="btn btn-dark animate__animated animate__slideInRight" data-bs-toggle="modal" data-bs-target="#addPodcast">
+				  Add Podcast
+				</button>
+				</div>
+			</div>
+	
+	<!-- TABLE FOR PODCAST LIST -->
+	<div class="container">
+		<div class="row justify-content-center mt-5" th:if="${podcastList != null and !podcastList.empty}">
+		<div class="col-3 card mx-3 shadow p-3 mb-5 bg-body rounded" style="width: 18rem;" th:each="p : ${podcastList}">
+		 <div class="modal fade" th:id="'editPodcast'+${p.id}" tabindex="-1" aria-labelledby="editPodcastLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="editPodcastLabel">Edit Podcast</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<form method="post" th:action="@{/editPodcast/} + ${p.id}  + '/' + ${currentPage}" th:object="${podcast}">
+							<div class="modal-body">
+									<input type="hidden"  th:field="*{id}"/><br>
+									<div class="mb-3">
+										<label class="form-label">Title</label> 
+										<input type="text" th:field="*{title}" class="form-control"> 
+									</div>
+									
+									<div class="mb-3">
+										<label class="form-label">Description</label>
+										<textarea cols="20" rows ="1" th:field="*{description}" class="form-control"></textarea>
+									</div>
+									
+									<div class="mb-3">
+										<label class="form-label">Link</label> 
+										<input type="text" th:field="*{link}" class="form-control">
+									</div>
+									
+									<div class="mb-3">
+										<label class="form-label">Rating</label> 
+										<input type="number" th:field="*{rating}" class="form-control">
+									</div>
+									
+									<div class="mb-3">
+										<label class="form-label">Streaming Services</label> 
+										<select name="streamingServiceIdList" multiple required class="form-select" aria-describedby="ssHelp2">
+											 <option th:each="s:${streamingServiceList}" th:value="${s.id}" th:text="${s.name}"> 
+										</select> 
+										<div id="ssHelp2" class="form-text">Hold Ctrl/Cmd + Click to select multiple streaming services.</div>
+							
+									</div>
+									
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+										<input type="submit" class="btn btn-dark" value="Save">
+									</div>
+								</div>
+							</form>
+							
+						</div>
+					</div>
+				</div>
+			 <div class="card-body">
+				  <h5 class="card-title" th:text="${p.title}"></h5>
+				  <p class="card-text" th:text="${p.description}"></p>
+				  <p class="card-text" th:text="'Rating: ' + ${p.rating}"></p>
+				  <a th:href="${p.link}" target="_blank" class="card-link">Listen here</a><br>
+				  <div th:if="${!p.streamingServiceList.empty}">
+				  <div th:each="streamingService : ${p.streamingServiceList}">
+					  <a th:href="${streamingService.link}" target="_blank">
+						<img th:src="${streamingService.imageLink}" style="width: 1.4vw; height: 2vh">
+				      </a>
+				  </div>
+				  </div>
+					  <button type="button" class="btn btn-dark" data-bs-toggle="modal" th:attr="data-bs-target='#editPodcast'+${p.id}" >Edit</button>
+					  
+					  <a type="button" class="btn btn-danger" th:href="@{/deletePodcast/} + ${p.id} + '/' + ${currentPage}">Delete</a>
+					
+				 
+			  </div>
+		  </div>
+		</div>
+	</div>
+	
+	<!-- ADD PODCAST FORM -->
+	<div class="row">
+		<div class="col">
+			<div class="modal fade" id="addPodcast" tabindex="-1" aria-labelledby="addPodcastLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="addPodcastLabel">Add Podcast</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+			        <form method="post" th:action="@{/addPodcast/0}" th:object="${podcast}">
+				      <div class="modal-body">
+					
+							<label class="form-label">Title</label> 
+							<input type="text" th:field="*{title}"  class="form-control"> 
+							
+							<label class="form-label">Description</label>
+							<textarea cols="20" rows ="3" th:field="*{description}"  class="form-control"></textarea>
+							
+							<label class="form-label">Link</label> 
+							<input type="text" th:field="*{link}" class="form-control">
+							
+							<label class="form-label">Rating</label> 
+							<input type="number" th:field="*{rating}" class="form-control">
+							
+							<label class="form-label">Streaming Services</label> 
+							<select name="streamingServiceIdList" multiple required class="form-select" aria-describedby="ssHelp">
+								 <option th:each="s:${streamingServiceList}" th:value="${s.id}" th:text="${s.name}"> 
+							</select> 
+							<div id="ssHelp" class="form-text">Hold Ctrl/Cmd + Click to select multiple streaming services.</div>
+					      </div>
+					      <div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					        <input type="submit" class="btn btn-primary" value="Add">
+					   </div>
+				     </form>
+			    </div>
+			  </div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!-- PAGE NUMBERS -->
+	<footer class="footer mt-auto py-1 bg-light fixed-bottom ">
+		<div class="container">
+	   <nav aria-label="Page navigation example">
+		  	<ul class="pagination justify-content-end">
+		   		<li th:classappend="${currentPage==i-1?'active':''}" th:each="i : ${#numbers.sequence(1,totalPages)}" class="page-item " ><a th:href="@{${i-1} + ${keyword!=null?'?keyword='+keyword: ''}}" class="page-link"><span th:text="${i}"></span></a></li>
+		  	</ul>
+		</nav>
+		</div>
+	</footer>
+</body>
+</html>

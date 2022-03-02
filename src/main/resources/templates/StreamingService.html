@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Streaming Services</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" integrity="sha512-c42qTSw/wPZ3/5LBzD+Bw5f7bSF2oxou6wEb+I/lqeaKV5FDIfMvvRp772y4jcJLKuGUOpbJMdg/BTl50fJYAw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body style="font-family: 'Exo 2', sans-serif;"  class="h-100 w-100">
+	<!-- NAV BAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+	  <div class="container-fluid">
+	    <a class="navbar-brand" href="/">PodReco</a>
+	    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+	    <div class="collapse navbar-collapse" id="navbarNav">
+	      <ul class="navbar-nav">
+	        <li class="nav-item">
+	         <a class="nav-link" th:href="@{podcasts/0}">Podcasts</a>
+	        </li>
+	        <li class="nav-item">
+	         <a class="nav-link" href="#">Streaming Services</a>
+	        </li>
+	      </ul>
+	    </div>
+	  </div>
+	</nav>
+	
+	<!-- SORTING -->
+	<div class="d-flex flex-row-reverse bd-highlight">
+		<div class="p-1 bd-highlight">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle animate__animated animate__slideInRight" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">Sort By: Name</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+					<li><a class="dropdown-item" th:href="@{/findByOrderByNameAsc}">Ascending</a></li>
+					<li><a class="dropdown-item" th:href="@{/findByOrderByNameDesc}">Descending</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="p-1 bd-highlight">
+			<button type="button" class="btn btn-dark animate__animated animate__slideInRight" data-bs-toggle="modal" data-bs-target="#addStreamingService">
+				  Add Streaming Service
+			</button>
+		</div>
+		
+	</div>
+	
+	<!-- DATA TABLE -->
+	<div class="container">
+	<div th:if="${streamingServiceList != null and !streamingServiceList.empty}">
+		<div th:each="s : ${streamingServiceList}" class="card mb-3 shadow-sm p-3 mb-5 bg-body rounded " style="max-width: 540px;">
+		  <div class="row g-0">
+		    <div class="col-md-4">
+		      <img th:src="${s.imageLink}" class="img-fluid rounded-start" alt="...">
+		    </div>
+		    <div class="col-md-8">
+		      <div class="card-body">
+		        <h5 class="card-title"><a th:href="${s.link}" th:text="${s.name}" target="_blank"></a></h5>
+		        <a type="button" class="btn btn-danger" th:href="@{/deleteStreamingService/} + ${s.id}">Delete</a>
+		        <button type="button" class="btn btn-dark" data-bs-toggle="modal" th:attr="data-bs-target='#editStreamingService'+${s.id}">Edit</button>
+		      </div>
+		    </div>
+		  </div>
+		  <div class="modal fade" th:id="'editStreamingService'+${s.id}" tabindex="-1" aria-labelledby="editStreamingServiceLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="editStreamingServiceLabel">Edit Streaming Service</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+				<form method="post" th:action="@{/editStreamingService/} + ${s.id}" th:object="${streamingService}">
+			      <div class="modal-body">
+						<input type="hidden"  th:field="*{id}"/><br>
+						
+						<label class="form-label">Name</label> 
+						<input type="text" th:field="*{name}" class="form-control"> 
+						
+						<label class="form-label">Link</label>
+						<input th:field="*{link}" class="form-control">
+						
+						<label class="form-label">Image Link</label> 
+						<input type="text" th:field="*{imageLink}" class="form-control">
+						
+										
+						<div class="modal-footer">
+					        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					        <input type="submit" class="btn btn-dark" value="Save">
+			      		</div>
+			      </div>
+					</form>
+			      
+			    </div>
+			  </div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- STREAMING SERVICE FORM -->
+	<div class="row">
+		<div class="col">
+			<div class="modal fade" id="addStreamingService" tabindex="-1" aria-labelledby="addStreamingServiceLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <h5 class="modal-title" id="addStreamingServiceLabel">Add Streaming Service</h5>
+			        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			      </div>
+				<form method="post" th:action="addStreamingService" th:object="${streamingService}">
+			      <div class="modal-body">
+			      
+		
+						<label class="form-label">Name</label> 
+						<input type="text" th:field="*{name}" class="form-control"> 
+						
+						<label class="form-label">Link</label>
+						<input type="text" th:field="*{link}" class="form-control"> 
+						
+						<label class="form-label">Image Link</label>
+						<input type="text" th:field="*{imageLink}" class="form-control"> 
+				
+				      <div class="modal-footer">
+				        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				        <input type="submit" class="btn btn-primary" value="Add">
+				      </div>
+			      </div>
+					</form>
+			    </div>
+			  </div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+</html>
