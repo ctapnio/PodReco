@@ -17,5 +17,5 @@ A Spring Boot web application where anyone can recommend podcasts and reference 
 ![](screenshot2.png)
 
 ## Room for improvement
-* UX/UI can be improved (ie. use of whitespace, font change, color palette)
+* UX/UI can be improved (ie. use of whitespace, typography, color palette)
 * Security/authentication can be added to prevent users from deleting data
